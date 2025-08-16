@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Techpulse hub — FAQ</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+  <div class="container mt">
+    <div class="card px py" id="faq"></div>
+  </div>
+  <script src="/site.js"></script>
+  <script>
+    const data = mountCommon('faq');
+    const root = document.getElementById('faq');
+    function render(){
+      root.innerHTML = (data.faq||[]).map((it,i)=>`
+        <div class='accordion-item'>
+          <button class='accordion-btn' data-edit data-key='faq.${i}.q'>
+            ${it.q}<span>+</span>
+          </button>
+          <div class='accordion-content' data-edit data-key='faq.${i}.a'>${it.a}</div>
+        </div>`).join('');
+    }
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Techpulse hub — Posts</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+  <div class="container mt">
+    <div id="postList" class="grid grid-2"></div>
+    <div class="card px py mt">
+      <h3>Add Post</h3>
+      <div class="grid grid-2 mt">
+        <input id="ptitle" placeholder="Title"/>
+        <input id="pdate" placeholder="YYYY-MM-DD"/>
+        <input id="pimage" placeholder="Image URL"/>
+        <textarea id="pexcerpt" placeholder="Excerpt" rows="3"></textarea>
+        <textarea id="pcontent" placeholder="Content" rows="5"></textarea>
+      </div>
+      <div class="mt"><button class="btn" id="addPost">Add Post</button></div>
+    </div>
+  </div>
+  <script src="/site.js"></script>
+  <script>
+    const data = mountCommon('posts');
+    const list = document.getElementById('postList');
+    function render(){
+      list.innerHTML = '';
+      (data.posts||[]).forEach((post,i)=>{
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          ${post.image ? `<img class='postimg' src='${post.image}'/>` : ''}
+          <div class='px py'>
+            <div style='display:flex;justify-content:space-between;gap:10px;align-items:center'>
+              <h3 data-edit data-key='posts.${i}.title'>${post.title}</h3>
+              <span class='small' data-edit data-key='posts.${i}.date'>${post.date}</span>
+            </div>
+            <p class='mt small' data-edit data-key='posts.${i}.excerpt'>${post.excerpt||''}</p>
+            <details class='mt'><summary class='underline'>Read more</summary>
+              <div class='mt' data-edit data-key='posts.${i}.content'>${post.content||''}</div>
+            </details>
+          </div>`;
+        list.appendChild(card);
+      })
+    }
+    render();
+    document.getElementById('addPost').onclick = () => {
+      const p = {
+        id: 'p-'+Date.now(),
+        title: document.getElementById('ptitle').value.trim(),
+        date: document.getElementById('pdate').value.trim() || new Date().toISOString().slice(0,10),
+        image: document.getElementById('pimage').value.trim(),
+        excerpt: document.getElementById('pexcerpt').value.trim(),
+        content: document.getElementById('pcontent').value.trim(),
+        links: []
+      };
+      if(!p.title) { alert('Title is required'); return; }
+      const cur = loadData();
+      cur.posts = [p, ...(cur.posts||[])];
+      saveData(cur);
+      location.reload();
+    };
+  </script>
+</body>
+</html>
